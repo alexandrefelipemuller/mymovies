@@ -5,16 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_recycler_view"
-        android:scrollbars="vertical"
+    <TextView
+        android:id="@+id/TVtest"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v7.widget.RecyclerView>
-<ProgressBar
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/pb_loading_indicator"/>
-</android.support.constraint.ConstraintLayout>
+        android:layout_height="match_parent" />
+    <GridView
+        android:id="@+id/gridView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:columnWidth="125dp"
+        android:horizontalSpacing="3dp"
+        android:numColumns="2"
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        android:verticalSpacing="3dp" >
+    </GridView>
+    </android.support.constraint.ConstraintLayout>

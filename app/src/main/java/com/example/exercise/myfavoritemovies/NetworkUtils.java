@@ -29,28 +29,14 @@ import java.util.Scanner;
  */
 public class NetworkUtils {
 
-    final static String GITHUB_BASE_URL =
-            "https://api.github.com/search/repositories";
+    final static String BASE_URL =
+            "https://api.themoviedb.org/3/movie/popular";
 
-    final static String PARAM_QUERY = "q";
+    final static String KEY = "";
 
-    /*
-     * The sort field. One of stars, forks, or updated.
-     * Default: results are sorted by best match if no field is specified.
-     */
-    final static String PARAM_SORT = "sort";
-    final static String sortBy = "stars";
-
-    /**
-     * Builds the URL used to query Github.
-     *
-     * @param githubSearchQuery The keyword that will be queried for.
-     * @return The URL to use to query the weather server.
-     */
-    public static URL buildUrl(String githubSearchQuery) {
-        Uri builtUri = Uri.parse(GITHUB_BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_QUERY, githubSearchQuery)
-                .appendQueryParameter(PARAM_SORT, sortBy)
+    public static String buildUrl() {
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendQueryParameter("api_key", KEY)
                 .build();
 
         URL url = null;
@@ -60,7 +46,7 @@ public class NetworkUtils {
             e.printStackTrace();
         }
 
-        return url;
+        return url.toString();
     }
 
     /**
