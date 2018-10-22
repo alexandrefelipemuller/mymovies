@@ -5,29 +5,34 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.exercise.myfavoritemovies.MoviesAdapter;
 import com.example.exercise.myfavoritemovies.NetworkUtils;
 import com.example.exercise.myfavoritemovies.R;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.Movie;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.MovieList;
+import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.PrefSingleton;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private ProgressBar mLoadingIndicator;
     private GridView gridView;
-    private Movie[] movies;
+    private List<Movie> movies;
+    private boolean filtered = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +47,43 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                intent.putExtra("movieObject", movies[position]);
+                intent.putExtra("movieObject", movies.get(position));
                 startActivity(intent);
             }
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (!filtered) {
+            List<Integer> favoriteList = PrefSingleton.getInstance().getFavorites();
+            List<Movie> moviesFiltered = new ArrayList<>();
+            //TODO filter it in rightway
+            for (int i = 0; i < favoriteList.size(); i++) {
+                for (int j = 0; j < movies.size(); j++)
+                    if (movies.get(j).getId().toString().equals(favoriteList.get(i).toString()))
+                        moviesFiltered.add(movies.get(j));
+            }
+            if (moviesFiltered.size() > 0) {
+                MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), moviesFiltered);
+                gridView.setAdapter(moviesAdapter);
+                filtered = true;
+            }
+        }
+        else
+        {
+            MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), movies);
+            gridView.setAdapter(moviesAdapter);
+            filtered = false;
+        }
+        return true;
+    }
     private class getMoviesList extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... p){

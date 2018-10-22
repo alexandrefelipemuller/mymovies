@@ -11,19 +11,21 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.Movie;
 
+import java.util.List;
+
 public class MoviesAdapter extends BaseAdapter {
 
     private final Context mContext;
-    private final Movie[] movies;
+    private final List<Movie> movies;
 
-    public MoviesAdapter(Context context, Movie[] movies) {
+    public MoviesAdapter(Context context, List<Movie> movies) {
         this.mContext = context;
         this.movies = movies;
     }
 
     @Override
     public int getCount() {
-        return movies.length;
+        return movies.size();
     }
 
     @Override
@@ -39,7 +41,7 @@ public class MoviesAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final Movie movies;
-        movies = this.movies[position];
+        movies = this.movies.get(position);
 
         if (convertView == null) {
             final LayoutInflater layoutInflater = LayoutInflater.from(mContext);

@@ -9,26 +9,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.ImageViewTargetFactory;
-import com.example.exercise.myfavoritemovies.MoviesAdapter;
 import com.example.exercise.myfavoritemovies.NetworkUtils;
 import com.example.exercise.myfavoritemovies.R;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.Movie;
-import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.MovieList;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.MovieVideoDetail;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.VideoDetail;
+import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.PrefSingleton;
 import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URL;
 
 public class DetailActivity extends AppCompatActivity {
     TextView TVtitle;
@@ -52,6 +43,7 @@ public class DetailActivity extends AppCompatActivity {
         YTplay = (Button) findViewById(R.id.play_pause_button);
 
         Movie movie = (Movie) getIntent().getSerializableExtra("movieObject");
+        final Integer id = movie.getId();
         TVtitle.setText(movie.getTitle());
         TVrelease.setText(getApplicationContext().getString(R.string.lblDate) +movie.getReleaseDate());
         TVSynopsis.setText(movie.getOverview());
@@ -62,14 +54,12 @@ public class DetailActivity extends AppCompatActivity {
         IVfavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(),
-                        "Would add on favorite" +
-                                " clicking this icon",
-                        Toast.LENGTH_LONG).show();
+                PrefSingleton.getInstance().addFavorite(id);
+                Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.addedFav) , Toast.LENGTH_SHORT).show();
             }
         });
         AsyncTask<String, Void, String> task =  new DetailActivity.getMovieDetail();
-        task.execute(movie.getId().toString());
+        task.execute(id.toString());
     }
     private class getMovieDetail extends AsyncTask<String, Void, String> {
         @Override

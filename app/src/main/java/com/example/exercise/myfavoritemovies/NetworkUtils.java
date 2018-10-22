@@ -20,8 +20,6 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Activity.MainActivity;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;

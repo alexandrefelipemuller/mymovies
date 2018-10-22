@@ -1,6 +1,7 @@
 package com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MovieList {
@@ -8,7 +9,7 @@ public class MovieList {
     private Integer page;
     private Integer totalResults;
     private Integer totalPages;
-    private Movie[] results = null;
+    private List<Movie> results = null;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public Integer getPage() {
@@ -35,11 +36,11 @@ public class MovieList {
         this.totalPages = totalPages;
     }
 
-    public Movie[] getResults() {
+    public List<Movie> getResults() {
         return results;
     }
 
-    public void setResults(Movie[] results) {
+    public void setResults(List<Movie> results) {
         this.results = results;
     }
 
