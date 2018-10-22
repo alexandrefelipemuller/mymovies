@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MyFavoriteMovies</string>
+    <string name="title_activity_detail">Details about movie</string>
 </resources>
