@@ -1,9 +1,8 @@
 apply plugin: 'com.android.application'
 
 repositories {
-
+    google()
     mavenCentral()
-
 }
 android {
     compileSdkVersion 28

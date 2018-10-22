@@ -15,7 +15,12 @@
  */
 package com.example.exercise.myfavoritemovies;
 
+import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Activity.MainActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,13 +34,13 @@ import java.util.Scanner;
  */
 public class NetworkUtils {
 
-    final static String BASE_URL =
-            "https://api.themoviedb.org/3/movie/popular";
+    private final static String BASE_URL =
+            "https://api.themoviedb.org/3";
 
     final static String KEY = "";
 
-    public static String buildUrl() {
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+    public static String buildUrl(String request) {
+        Uri builtUri = Uri.parse(BASE_URL+request).buildUpon()
                 .appendQueryParameter("api_key", KEY)
                 .build();
 
@@ -46,7 +51,10 @@ public class NetworkUtils {
             e.printStackTrace();
         }
 
-        return url.toString();
+        if (url != null)
+            return url.toString();
+        else
+            return null;
     }
 
     /**
@@ -73,5 +81,32 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+    public static String getPopularListResponse(){
+        try {
+            URL servUrl = new URL(NetworkUtils.buildUrl("/movie/popular"));
+            Log.i("doInBackground", "Trying to connect to: " + servUrl.toString());
+            return NetworkUtils.getResponseFromHttpUrl(servUrl);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String getDetailsResponse(String id){
+        try {
+            URL servUrl = new URL(NetworkUtils.buildUrl("/movie/"+id+"/videos"));
+            Log.i("doInBackground", "Trying to connect to: " + servUrl.toString());
+            return NetworkUtils.getResponseFromHttpUrl(servUrl);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void defaultError(Context context){
+        Toast.makeText(context, "Network error, please try again later...", Toast.LENGTH_SHORT).show();
     }
 }

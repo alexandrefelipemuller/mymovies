@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">MyFavoriteMovies</string>
+    <string name="app_name">MyFavoriteMoviesApp</string>
     <string name="title_activity_detail">Details about movie</string>
+    <string name="trailler_button">Watch movie trailler</string>
+    <string name="lblDate">Released: </string>
+    <string name="lblVotes">Votes: </string>
 </resources>

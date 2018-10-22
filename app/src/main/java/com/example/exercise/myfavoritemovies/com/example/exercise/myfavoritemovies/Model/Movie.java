@@ -8,21 +8,40 @@ import java.util.List;
 import java.util.Map;
 
 public class Movie implements Serializable {
-
+    @SerializedName("vote_count")
     private Integer voteCount;
+
     private Integer id;
+
     private Boolean video;
+
+    @SerializedName("vote_average")
     private Double voteAverage;
+
     private String title;
+
     private Double popularity;
+
     @SerializedName("poster_path")
     private String posterPath;
+
+    @SerializedName("original_language")
     private String originalLanguage;
+
+    @SerializedName("original_title")
     private String originalTitle;
+
+    @SerializedName("genre_ids")
     private List<Integer> genreIds = null;
+
+    @SerializedName("backdrop_path")
     private String backdropPath;
+
     private Boolean adult;
+
     private String overview;
+
+    @SerializedName("release_date")
     private String releaseDate;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

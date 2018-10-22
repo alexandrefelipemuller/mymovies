@@ -11,14 +11,16 @@
         android:numColumns="auto_fit"
         android:stretchMode="spacingWidthUniform"
         android:background="#333333"
-        android:columnWidth="125dp"
+        android:columnWidth="110dp"
         android:horizontalSpacing="3dp"
         android:padding="5dp"
         android:scrollbars="vertical"
-        android:verticalSpacing="3dp">
+        android:verticalSpacing="30dp">
     </GridView>
     <ProgressBar
         android:id="@+id/loadingIndicator"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
 </RelativeLayout>

@@ -48,49 +48,31 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void defaultError(){
-        Toast.makeText(MainActivity.this, "Network error, please try again later...", Toast.LENGTH_SHORT).show();
-    }
     private class getMoviesList extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... p){
-            try {
-                URL servUrl = new URL(NetworkUtils.buildUrl());
-                Log.i("doInBackground", "Trying to connect to: " + servUrl.toString());
-                String searchResults = NetworkUtils.getResponseFromHttpUrl(servUrl);
-                return searchResults;
-            }
-            catch (Exception e){
-                e.printStackTrace();
-                return null;
-            }
+            return NetworkUtils.getPopularListResponse();
         }
         @Override
         protected void onPostExecute(String data) {
-
             // When we finish loading, we want to hide the loading indicator from the user.
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-
             if (data == null) {
-                defaultError();
-                return;
+                NetworkUtils.defaultError(getApplicationContext());
             } else {
                 Log.d("onPostExecute", "Received JSON: " + data);
                 try{
                     JSONObject main = new JSONObject(data);
                     JSONArray arr = main.getJSONArray("results");
-                    Gson gson = new Gson();
-                    MovieList response = gson.fromJson(data, MovieList.class);
+                    MovieList response = new Gson().fromJson(data, MovieList.class);
                     movies = response.getResults();
                     MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), movies);
                     gridView.setAdapter(moviesAdapter);
                 }
                 catch(JSONException e){
                     e.printStackTrace();
-                    defaultError();
+                    NetworkUtils.defaultError(getApplicationContext());
                 }
-
-
             }
             Log.i("getMoviesList","Task Completed!");
         }
