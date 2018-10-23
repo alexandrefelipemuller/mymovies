@@ -4,5 +4,8 @@
     <string name="trailler_button">Watch movie trailler</string>
     <string name="lblDate">Released: </string>
     <string name="lblVotes">Votes: </string>
+    <string name="lblRating">Rating: </string>
     <string name="addedFav">Added to favorites</string>
+    <string name="see_popular">Popular\/Top Rated</string>
+
 </resources>

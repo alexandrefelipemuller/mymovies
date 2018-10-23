@@ -26,6 +26,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView TVrelease;
     TextView TVSynopsis;
     TextView TVUserRating;
+    TextView TVTotalRating;
     ImageView IVPoster;
     ImageView IVfavorite;
     Button YTplay;
@@ -38,9 +39,10 @@ public class DetailActivity extends AppCompatActivity {
         TVrelease = findViewById(R.id.mReleaseDate);
         TVSynopsis = findViewById(R.id.mSynopsis);
         TVUserRating = findViewById(R.id.mUserRating);
+        TVTotalRating = findViewById(R.id.mTotalRating);
         IVPoster = findViewById(R.id.mPosterImage);
         IVfavorite = findViewById(R.id.imageview_favorite);
-        YTplay = (Button) findViewById(R.id.play_pause_button);
+        YTplay = findViewById(R.id.play_pause_button);
 
         Movie movie = (Movie) getIntent().getSerializableExtra("movieObject");
         final Integer id = movie.getId();
@@ -49,6 +51,8 @@ public class DetailActivity extends AppCompatActivity {
         TVSynopsis.setText(movie.getOverview());
         if (movie.getVoteCount() != null)
             TVUserRating.setText(getApplicationContext().getString(R.string.lblVotes)+movie.getVoteCount().toString());
+        if (movie.getVoteAverage() != null)
+            TVTotalRating.setText(getApplicationContext().getString(R.string.lblRating)+movie.getVoteAverage().toString());
         Glide.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w500"+movie.getPosterPath()).into(IVPoster);
         IVfavorite.setClickable(true);
         IVfavorite.setOnClickListener(new View.OnClickListener() {

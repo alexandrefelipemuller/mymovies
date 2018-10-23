@@ -2,9 +2,13 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
-        android:id="@+id/action_refresh"
-        android:orderInCategory="100"
+        android:id="@+id/action_favorites"
+        android:orderInCategory="1"
         android:icon="@drawable/star"
-        android:title="Refresh"
+        android:title="Favorites"
         app:showAsAction="always" />
+    <item android:id="@+id/action_filter"
+        android:title="@string/see_popular"
+        android:orderInCategory="2"
+        app:showAsAction="ifRoom" />
 </menu>

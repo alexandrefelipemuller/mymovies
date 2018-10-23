@@ -35,11 +35,9 @@ public class NetworkUtils {
     private final static String BASE_URL =
             "https://api.themoviedb.org/3";
 
-    final static String KEY = "";
-
     public static String buildUrl(String request) {
         Uri builtUri = Uri.parse(BASE_URL+request).buildUpon()
-                .appendQueryParameter("api_key", KEY)
+                .appendQueryParameter("api_key", BuildConfig.API_KEY)
                 .build();
 
         URL url = null;
@@ -80,9 +78,9 @@ public class NetworkUtils {
             urlConnection.disconnect();
         }
     }
-    public static String getPopularListResponse(){
+    public static String getListResponse(String param){
         try {
-            URL servUrl = new URL(NetworkUtils.buildUrl("/movie/popular"));
+            URL servUrl = new URL(NetworkUtils.buildUrl("/movie/"+param));
             Log.i("doInBackground", "Trying to connect to: " + servUrl.toString());
             return NetworkUtils.getResponseFromHttpUrl(servUrl);
         }

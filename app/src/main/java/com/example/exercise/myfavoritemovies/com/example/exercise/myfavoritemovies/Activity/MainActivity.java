@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private GridView gridView;
     private List<Movie> movies;
     private boolean filtered = false;
+    private boolean viewTopRated = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         gridView = findViewById(R.id.gridView1);
         mLoadingIndicator = findViewById(R.id.loadingIndicator);
 
-        AsyncTask<Void, Void, String> task =  new getMoviesList();
-        task.execute();
+        AsyncTask<String, Void, String> task =  new getMoviesList();
+        task.execute("popular");
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -61,33 +62,46 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (!filtered) {
-            List<Integer> favoriteList = PrefSingleton.getInstance().getFavorites();
-            List<Movie> moviesFiltered = new ArrayList<>();
-            //TODO filter it in rightway
-            for (int i = 0; i < favoriteList.size(); i++) {
-                for (int j = 0; j < movies.size(); j++)
-                    if (movies.get(j).getId().toString().equals(favoriteList.get(i).toString()))
-                        moviesFiltered.add(movies.get(j));
-            }
-            if (moviesFiltered.size() > 0) {
-                MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), moviesFiltered);
-                gridView.setAdapter(moviesAdapter);
-                filtered = true;
-            }
+        switch (item.getItemId()) {
+            case R.id.action_favorites:
+                if (!filtered) {
+                    List<Integer> favoriteList = PrefSingleton.getInstance().getFavorites();
+                    List<Movie> moviesFiltered = new ArrayList<>();
+                    //TODO filter it in rightway
+                    for (int i = 0; i < favoriteList.size(); i++) {
+                        for (int j = 0; j < movies.size(); j++)
+                            if (movies.get(j).getId().toString().equals(favoriteList.get(i).toString()))
+                                moviesFiltered.add(movies.get(j));
+                    }
+                    if (moviesFiltered.size() > 0) {
+                        MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), moviesFiltered);
+                        gridView.setAdapter(moviesAdapter);
+                        filtered = true;
+                    }
+                } else {
+                    MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), movies);
+                    gridView.setAdapter(moviesAdapter);
+                    filtered = false;
+                }
+                return true;
+            case R.id.action_filter:
+                if (viewTopRated){
+                    AsyncTask<String, Void, String> task =  new getMoviesList();
+                    task.execute("popular");
+                    viewTopRated=false;
+                }else {
+                    AsyncTask<String, Void, String> task =  new getMoviesList();
+                    task.execute("top_rated");
+                    viewTopRated=true;
+                }
+                return true;
         }
-        else
-        {
-            MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), movies);
-            gridView.setAdapter(moviesAdapter);
-            filtered = false;
-        }
-        return true;
+        return false;
     }
-    private class getMoviesList extends AsyncTask<Void, Void, String> {
+    private class getMoviesList extends AsyncTask<String, Void, String> {
         @Override
-        protected String doInBackground(Void... p){
-            return NetworkUtils.getPopularListResponse();
+        protected String doInBackground(String... p){
+            return NetworkUtils.getListResponse(p[0]);
         }
         @Override
         protected void onPostExecute(String data) {
