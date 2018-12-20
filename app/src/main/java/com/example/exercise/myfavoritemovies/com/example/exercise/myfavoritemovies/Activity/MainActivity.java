@@ -18,7 +18,7 @@ import com.example.exercise.myfavoritemovies.NetworkUtils;
 import com.example.exercise.myfavoritemovies.R;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.Movie;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.MovieList;
-import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.PrefSingleton;
+import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.movieDBHelper;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -65,18 +65,22 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_favorites:
                 if (!filtered) {
-                    List<Integer> favoriteList = PrefSingleton.getInstance().getFavorites();
+                    movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
+                    List<Long> favoriteList = mDbHelper.getFavorites();
+                    //List<Integer> favoriteList = PrefSingleton.getInstance().getFavorites();
                     List<Movie> moviesFiltered = new ArrayList<>();
-                    //TODO filter it in rightway
-                    for (int i = 0; i < favoriteList.size(); i++) {
-                        for (int j = 0; j < movies.size(); j++)
-                            if (movies.get(j).getId().toString().equals(favoriteList.get(i).toString()))
-                                moviesFiltered.add(movies.get(j));
-                    }
-                    if (moviesFiltered.size() > 0) {
-                        MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), moviesFiltered);
-                        gridView.setAdapter(moviesAdapter);
-                        filtered = true;
+                    if (favoriteList != null) {
+                        //TODO filter it in rightway
+                        for (int i = 0; i < favoriteList.size(); i++) {
+                            for (int j = 0; j < movies.size(); j++)
+                                if (movies.get(j).getId().toString().equals(favoriteList.get(i).toString()))
+                                    moviesFiltered.add(movies.get(j));
+                        }
+                        if (moviesFiltered.size() > 0) {
+                            MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), moviesFiltered);
+                            gridView.setAdapter(moviesAdapter);
+                            filtered = true;
+                        }
                     }
                 } else {
                     MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), movies);

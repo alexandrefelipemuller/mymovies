@@ -18,7 +18,7 @@ import com.example.exercise.myfavoritemovies.R;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.Movie;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.MovieVideoDetail;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.VideoDetail;
-import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.PrefSingleton;
+import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.movieDBHelper;
 import com.google.gson.Gson;
 
 public class DetailActivity extends AppCompatActivity {
@@ -58,8 +58,8 @@ public class DetailActivity extends AppCompatActivity {
         IVfavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PrefSingleton.getInstance().addFavorite(id);
-                Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.addedFav) , Toast.LENGTH_SHORT).show();
+                movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
+                mDbHelper.addFavorite(id);
             }
         });
         AsyncTask<String, Void, String> task =  new DetailActivity.getMovieDetail();
