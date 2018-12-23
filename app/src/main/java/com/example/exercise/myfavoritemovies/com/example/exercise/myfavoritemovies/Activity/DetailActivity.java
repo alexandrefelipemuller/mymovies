@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,9 +19,14 @@ import com.example.exercise.myfavoritemovies.NetworkUtils;
 import com.example.exercise.myfavoritemovies.R;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.Movie;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.MovieVideoDetail;
+import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.Review;
+import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.Reviews;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.VideoDetail;
 import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.movieDBHelper;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
     TextView TVtitle;
@@ -30,6 +37,7 @@ public class DetailActivity extends AppCompatActivity {
     ImageView IVPoster;
     ImageView IVfavorite;
     Button YTplay;
+    ListView LVReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +51,7 @@ public class DetailActivity extends AppCompatActivity {
         IVPoster = findViewById(R.id.mPosterImage);
         IVfavorite = findViewById(R.id.imageview_favorite);
         YTplay = findViewById(R.id.play_pause_button);
+        LVReviews = findViewById(R.id.reviewsId);
 
         Movie movie = (Movie) getIntent().getSerializableExtra("movieObject");
         final Integer id = movie.getId();
@@ -64,6 +73,9 @@ public class DetailActivity extends AppCompatActivity {
         });
         AsyncTask<String, Void, String> task =  new DetailActivity.getMovieDetail();
         task.execute(id.toString());
+
+        AsyncTask<String, Void, String> task2 = new DetailActivity.getMovieReviews();
+        task2.execute(id.toString());
     }
     private class getMovieDetail extends AsyncTask<String, Void, String> {
         @Override
@@ -106,4 +118,40 @@ public class DetailActivity extends AppCompatActivity {
             Log.i("getMovieDetail","Task Completed!");
         }
     }
+
+    private class getMovieReviews extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... p) {
+            return NetworkUtils.getReviewsResponse(p[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String data) {
+
+            YTplay.setVisibility(View.VISIBLE);
+            if (data == null) {
+                NetworkUtils.defaultError(getApplicationContext());
+                return;
+            } else {
+                Log.d("onPostExecute", "Received JSON: " + data);
+                try {
+                    Reviews response = new Gson().fromJson(data, Reviews.class);
+                    final Review[] reviewsList = response.getVideoReviews();
+                    List<String> values = new ArrayList<>();
+                    for (Review val : reviewsList) {
+                        values.add(val.content);
+                    }
+                    //TODO make custom adapter
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+                            android.R.layout.simple_list_item_2, android.R.id.text1, values);
+                    LVReviews.setAdapter(adapter);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    NetworkUtils.defaultError(getApplicationContext());
+                }
+            }
+            Log.i("getMovieReviews", "Task Completed!");
+        }
+    }
+
 }

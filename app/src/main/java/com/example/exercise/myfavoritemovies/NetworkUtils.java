@@ -102,6 +102,18 @@ public class NetworkUtils {
         }
     }
 
+
+    public static String getReviewsResponse(String id) {
+        try {
+            URL servUrl = new URL(NetworkUtils.buildUrl("/movie/" + id + "/reviews"));
+            Log.i("doInBackground", "Trying to connect to: " + servUrl.toString());
+            return NetworkUtils.getResponseFromHttpUrl(servUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static void defaultError(Context context){
         Toast.makeText(context, "Network error, please try again later...", Toast.LENGTH_SHORT).show();
     }
