@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 if (!filtered) {
                     movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
                     List<Long> favoriteList = mDbHelper.getFavorites();
-                    //List<Integer> favoriteList = PrefSingleton.getInstance().getFavorites();
                     List<Movie> moviesFiltered = new ArrayList<>();
                     if (favoriteList != null) {
                         //TODO filter it in rightway
@@ -95,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                             MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), moviesFiltered);
                             gridView.setAdapter(moviesAdapter);
                             filtered = true;
+                            movies = moviesFiltered;
                         }
                     }
                 } else {
