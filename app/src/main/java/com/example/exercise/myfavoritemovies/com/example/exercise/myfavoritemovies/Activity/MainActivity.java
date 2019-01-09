@@ -34,15 +34,15 @@ public class MainActivity extends AppCompatActivity {
     private List<Movie> movies;
     private boolean filtered = false;
     private boolean viewTopRated = false;
+    private static String currentView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         gridView = findViewById(R.id.gridView1);
         mLoadingIndicator = findViewById(R.id.loadingIndicator);
-
-        AsyncTask<String, Void, String> task =  new getMoviesList();
-        task.execute("popular");
+        onUpdate();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -52,6 +52,21 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void onUpdate() {
+        if (currentView == null) {
+            currentView = "popular";
+        }
+        final AsyncTask<String, Void, String> task =  new getMoviesList();
+        task.execute(currentView);
+    }
+    private void switchView(){
+        if (currentView != null && currentView.equals("top_rated")){
+            currentView = "popular";
+        }else {
+            currentView = "top_rated";
+        }
     }
 
     @Override
@@ -89,15 +104,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.action_filter:
-                if (viewTopRated){
-                    AsyncTask<String, Void, String> task =  new getMoviesList();
-                    task.execute("popular");
-                    viewTopRated=false;
-                }else {
-                    AsyncTask<String, Void, String> task =  new getMoviesList();
-                    task.execute("top_rated");
-                    viewTopRated=true;
-                }
+                switchView();
+                onUpdate();
                 return true;
         }
         return false;
