@@ -1,9 +1,12 @@
 package com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model;
 
+import android.arch.persistence.room.Dao;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Dao
 public class MovieList {
 
     private Integer page;

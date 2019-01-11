@@ -1,5 +1,9 @@
 package com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -7,10 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Entity
 public class Movie implements Serializable {
     @SerializedName("vote_count")
     private Integer voteCount;
 
+    @NonNull
+    @PrimaryKey
     private Integer id;
 
     private Boolean video;
