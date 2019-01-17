@@ -2,11 +2,14 @@ package com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemov
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
+import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Converters;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +41,9 @@ public class Movie implements Serializable {
     @SerializedName("original_title")
     private String originalTitle;
 
-    @SerializedName("genre_ids")
-    private List<Integer> genreIds = null;
+  //  @SerializedName("genre_ids")
+  //  private List<Integer> genreIds = null;
+  //  private Integer genreIds = null;
 
     @SerializedName("backdrop_path")
     private String backdropPath;
@@ -50,7 +54,8 @@ public class Movie implements Serializable {
 
     @SerializedName("release_date")
     private String releaseDate;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    //private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public Integer getVoteCount() {
         return voteCount;
@@ -124,13 +129,13 @@ public class Movie implements Serializable {
         this.originalTitle = originalTitle;
     }
 
-    public List<Integer> getGenreIds() {
+   /* public Integer getGenreIds() {
         return genreIds;
     }
 
-    public void setGenreIds(List<Integer> genreIds) {
+    public void setGenreIds(Integer genreIds) {
         this.genreIds = genreIds;
-    }
+    }*/
 
     public String getBackdropPath() {
         return backdropPath;
@@ -164,12 +169,11 @@ public class Movie implements Serializable {
         this.releaseDate = releaseDate;
     }
 
-    public Map<String, Object> getAdditionalProperties() {
+    /*public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }
 
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
-    }
-
+    }*/
 }

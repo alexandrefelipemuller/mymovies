@@ -1,5 +1,7 @@
 package com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies;
 
+import android.app.Activity;
+import android.arch.persistence.room.Room;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,6 +9,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
+
+import com.example.exercise.myfavoritemovies.MovieDatabase;
+import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Activity.MainActivity;
+import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,45 +26,77 @@ public class movieDBHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS favMovies";
     private SQLiteDatabase db;
+    private MovieDatabase movieDatabase;
     private Context context;
 
     public movieDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-        this.db = this.getWritableDatabase();
+        movieDatabase = Room.databaseBuilder(this.context,
+                MovieDatabase.class, DATABASE_NAME)
+                .fallbackToDestructiveMigration()
+                .build();
     }
 
-    public void addFavorite(int id) {
-        ContentValues values = new ContentValues();
-        values.put("ID", id);
-        long newRowId = db.insert("favMovies", null, values);
-        if (newRowId > 0)
-            Toast.makeText(context, "Movie added to favorites", Toast.LENGTH_SHORT).show();
-        else
-            removeFavorite(id);
+    public void addFavorite(final int id) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Movie movie =new Movie();
+                movie.setId(id);
+                movieDatabase.daoAccess().insertOnlySingleMovie(movie);
+            }
+        }) .start();
+        Toast.makeText(context, "Movie added to favorites", Toast.LENGTH_SHORT).show();
+     //   ContentValues values = new ContentValues();
+     //   values.put("ID", id);
+    //    long newRowId = db.insert("favMovies", null, values);
+     //   if (newRowId > 0)
+     //   else
+     //       removeFavorite(id);
         //Toast.makeText(context, "Could not add your movie to favorite list, try again later...", Toast.LENGTH_SHORT).show();
     }
 
-    private void removeFavorite(int id) {
+    private void removeFavorite(final int id) {
+       /*
         ContentValues values = new ContentValues();
         values.put("ID", id);
         long deleted = db.delete("favMovies", "id =" + id, null);
         if (deleted > 0)
             Toast.makeText(context, "Movie removed from favorites", Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(context, "Could not remove your movie from favorite list, try again later...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Could not remove your movie from favorite list, try again later...", Toast.LENGTH_SHORT).show();*/
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Movie movie =new Movie();
+                movie.setId(id);
+                movieDatabase.daoAccess().deleteMovie(movie);
+            }
+        }) .start();
+        Toast.makeText(context, "Movie removed from favorites", Toast.LENGTH_SHORT).show();
     }
 
-    public List getFavorites() {
-        SQLiteDatabase db = this.getReadableDatabase();
+    public void getFavorites() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Movie> favMovies = movieDatabase.daoAccess().fetchAllMovies();
+                MainActivity.updateFav(favMovies);
+            }
+        }) .start();
+
+      /*  SQLiteDatabase db = this.getReadableDatabase();
         String[] projection = {
-                "ID"
+                "id"
         };
-        String sortOrder = "ID DESC";
+        String sortOrder = "id DESC";
 
         try {
             Cursor cursor = db.query(
-                    "favMovies",
+                    "Movie",
                     projection,             // The array of columns to return (pass null to get all)
                     null,              // The columns for the WHERE clause
                     null,          // The values for the WHERE clause
@@ -77,7 +115,7 @@ public class movieDBHelper extends SQLiteOpenHelper {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
-        }
+        }*/
     }
 
     public void onCreate(SQLiteDatabase db) {

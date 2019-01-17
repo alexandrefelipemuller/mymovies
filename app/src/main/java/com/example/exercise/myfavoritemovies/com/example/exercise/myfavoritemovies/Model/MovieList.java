@@ -1,12 +1,15 @@
 package com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Model;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Dao
 public class MovieList {
 
     private Integer page;
@@ -55,4 +58,19 @@ public class MovieList {
         this.additionalProperties.put(name, value);
     }
 
+    @Insert
+    void insertOnlySingleMovie (Movie movie) {
+    }
+
+    @Query("SELECT * FROM favMovies WHERE ID = :movieId")
+    Movie fetchOneMoviesbyMovieId(int movieId) {
+        return null;
+    }
+
+    @Update
+    void updateMovie (Movie movie) {
+    }
+    @Delete
+    void deleteMovie (Movie movie) {
+    }
 }

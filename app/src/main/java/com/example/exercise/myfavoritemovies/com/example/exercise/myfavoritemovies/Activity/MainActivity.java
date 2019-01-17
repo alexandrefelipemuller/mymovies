@@ -30,9 +30,10 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private ProgressBar mLoadingIndicator;
-    private GridView gridView;
-    private List<Movie> movies;
-    private boolean filtered = false;
+    private static GridView gridView;
+    private static List<Movie> movies;
+    private static List<Movie> moviesFiltered;
+    private static boolean filtered = false;
     private boolean viewTopRated = false;
     private static String currentView;
 
@@ -75,27 +76,30 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.mainmenu, menu);
         return true;
     }
+    public static void updateFav(List<Movie> favoriteList) {
+        moviesFiltered = new ArrayList<>();
+        if (favoriteList != null) {
+            //TODO filter it in rightway
+            for (int i = 0; i < favoriteList.size(); i++) {
+                for (int j = 0; j < movies.size(); j++)
+                    if (movies.get(j).getId().toString().equals(favoriteList.get(i).getId().toString()))
+                        moviesFiltered.add(movies.get(j));
+            }
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_favorites:
                 if (!filtered) {
                     movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
-                    List<Long> favoriteList = mDbHelper.getFavorites();
-                    List<Movie> moviesFiltered = new ArrayList<>();
-                    if (favoriteList != null) {
-                        //TODO filter it in rightway
-                        for (int i = 0; i < favoriteList.size(); i++) {
-                            for (int j = 0; j < movies.size(); j++)
-                                if (movies.get(j).getId().toString().equals(favoriteList.get(i).toString()))
-                                    moviesFiltered.add(movies.get(j));
-                        }
-                        if (moviesFiltered.size() > 0) {
-                            MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), moviesFiltered);
-                            gridView.setAdapter(moviesAdapter);
-                            filtered = true;
-                            movies = moviesFiltered;
-                        }
+                    mDbHelper.getFavorites();
+                    if (moviesFiltered != null && moviesFiltered.size() > 0) {
+                        MoviesAdapter moviesAdapter = new MoviesAdapter(this.getApplicationContext(), moviesFiltered);
+                        gridView.setAdapter(moviesAdapter);
+                        filtered = true;
+                        movies = moviesFiltered;
                     }
                 } else {
                     MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), movies);
