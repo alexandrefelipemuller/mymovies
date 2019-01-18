@@ -53,8 +53,7 @@ public class DetailActivity extends AppCompatActivity {
         YTplay = findViewById(R.id.play_pause_button);
         LVReviews = findViewById(R.id.reviewsId);
 
-        Movie movie = (Movie) getIntent().getSerializableExtra("movieObject");
-        final Integer id = movie.getId();
+        final Movie movie = (Movie) getIntent().getSerializableExtra("movieObject");
         TVtitle.setText(movie.getTitle());
         TVrelease.setText(getApplicationContext().getString(R.string.lblDate) +movie.getReleaseDate());
         TVSynopsis.setText(movie.getOverview());
@@ -68,14 +67,14 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
-                mDbHelper.addFavorite(id);
+                mDbHelper.addFavorite(movie);
             }
         });
         AsyncTask<String, Void, String> task =  new DetailActivity.getMovieDetail();
-        task.execute(id.toString());
+        task.execute(movie.getId().toString());
 
         AsyncTask<String, Void, String> task2 = new DetailActivity.getMovieReviews();
-        task2.execute(id.toString());
+        task2.execute(movie.getId().toString());
     }
     private class getMovieDetail extends AsyncTask<String, Void, String> {
         @Override

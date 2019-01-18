@@ -62,7 +62,7 @@ public class MovieList {
     void insertOnlySingleMovie (Movie movie) {
     }
 
-    @Query("SELECT * FROM favMovies WHERE ID = :movieId")
+    @Query("SELECT * FROM Movie WHERE ID = :movieId")
     Movie fetchOneMoviesbyMovieId(int movieId) {
         return null;
     }

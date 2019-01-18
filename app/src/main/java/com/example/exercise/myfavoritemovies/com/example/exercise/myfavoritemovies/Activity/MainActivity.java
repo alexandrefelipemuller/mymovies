@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         gridView = findViewById(R.id.gridView1);
         mLoadingIndicator = findViewById(R.id.loadingIndicator);
         onUpdate();
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -53,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
+        mDbHelper.getFavorites();
     }
 
     private void onUpdate() {
@@ -76,16 +83,8 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.mainmenu, menu);
         return true;
     }
-    public static void updateFav(List<Movie> favoriteList) {
-        moviesFiltered = new ArrayList<>();
-        if (favoriteList != null) {
-            //TODO filter it in rightway
-            for (int i = 0; i < favoriteList.size(); i++) {
-                for (int j = 0; j < movies.size(); j++)
-                    if (movies.get(j).getId().toString().equals(favoriteList.get(i).getId().toString()))
-                        moviesFiltered.add(movies.get(j));
-            }
-        }
+    public static void updateFavoriteList(List<Movie> favoriteList) {
+        moviesFiltered = favoriteList;
     }
 
     @Override
@@ -93,13 +92,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_favorites:
                 if (!filtered) {
-                    movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
-                    mDbHelper.getFavorites();
                     if (moviesFiltered != null && moviesFiltered.size() > 0) {
                         MoviesAdapter moviesAdapter = new MoviesAdapter(this.getApplicationContext(), moviesFiltered);
                         gridView.setAdapter(moviesAdapter);
                         filtered = true;
-                        movies = moviesFiltered;
                     }
                 } else {
                     MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), movies);
