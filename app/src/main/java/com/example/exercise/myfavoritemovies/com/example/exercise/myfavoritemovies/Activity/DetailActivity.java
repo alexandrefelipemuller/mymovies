@@ -36,6 +36,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView TVTotalRating;
     ImageView IVPoster;
     ImageView IVfavorite;
+    ImageView IV_not_favorite;
     Button YTplay;
     ListView LVReviews;
 
@@ -50,6 +51,7 @@ public class DetailActivity extends AppCompatActivity {
         TVTotalRating = findViewById(R.id.mTotalRating);
         IVPoster = findViewById(R.id.mPosterImage);
         IVfavorite = findViewById(R.id.imageview_favorite);
+        IV_not_favorite = findViewById(R.id.imageview__not_favorite);
         YTplay = findViewById(R.id.play_pause_button);
         LVReviews = findViewById(R.id.reviewsId);
 
@@ -68,6 +70,14 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
                 mDbHelper.addFavorite(movie);
+            }
+        });
+        IV_not_favorite.setClickable(true);
+        IV_not_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
+                mDbHelper.removeFavorite(movie.getId());
             }
         });
         AsyncTask<String, Void, String> task =  new DetailActivity.getMovieDetail();

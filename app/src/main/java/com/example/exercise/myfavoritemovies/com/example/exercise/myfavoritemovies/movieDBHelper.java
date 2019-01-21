@@ -51,7 +51,7 @@ public class movieDBHelper extends SQLiteOpenHelper {
         Toast.makeText(context, "Movie added to favorites", Toast.LENGTH_SHORT).show();
     }
 
-    private void removeFavorite(final int id) {
+    public void removeFavorite(final int id) {
         new Thread(new Runnable() {
             @Override
             public void run() {
