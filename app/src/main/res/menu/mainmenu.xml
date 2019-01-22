@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_favorites"
         android:orderInCategory="1"
-        android:icon="@drawable/star"
+        android:icon="@drawable/star_filled"
         android:title="Favorites"
         app:showAsAction="always" />
     <item android:id="@+id/action_filter"

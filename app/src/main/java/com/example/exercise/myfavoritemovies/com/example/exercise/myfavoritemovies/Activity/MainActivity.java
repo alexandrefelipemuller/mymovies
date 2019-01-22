@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -110,6 +111,16 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
+    public static boolean getFavorite(Integer id) {
+        int size = moviesFiltered.size();
+        for (int i = 0; i < size; i++) {
+            if (moviesFiltered.get(i).getId().intValue() == id.intValue())
+                return true;
+        }
+        return false;
+    }
+
     private class getMoviesList extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... p){

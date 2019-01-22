@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryDark"
     android:orientation="vertical">
     <ScrollView
         android:layout_width="fill_parent"
@@ -77,14 +76,8 @@
                 android:id="@+id/imageview_favorite"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/start_filled"
-                android:layout_gravity="center|right" />
-            <ImageView
-                android:id="@+id/imageview__not_favorite"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
                 android:src="@drawable/star"
-                android:layout_gravity="center|right" />
+                android:layout_gravity="center|end" />
         </LinearLayout>
     </LinearLayout>
 

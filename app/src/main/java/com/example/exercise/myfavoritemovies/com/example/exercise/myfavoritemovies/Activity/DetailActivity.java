@@ -36,9 +36,9 @@ public class DetailActivity extends AppCompatActivity {
     TextView TVTotalRating;
     ImageView IVPoster;
     ImageView IVfavorite;
-    ImageView IV_not_favorite;
     Button YTplay;
     ListView LVReviews;
+    boolean favoriteMovie =false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,6 @@ public class DetailActivity extends AppCompatActivity {
         TVTotalRating = findViewById(R.id.mTotalRating);
         IVPoster = findViewById(R.id.mPosterImage);
         IVfavorite = findViewById(R.id.imageview_favorite);
-        IV_not_favorite = findViewById(R.id.imageview__not_favorite);
         YTplay = findViewById(R.id.play_pause_button);
         LVReviews = findViewById(R.id.reviewsId);
 
@@ -64,20 +63,27 @@ public class DetailActivity extends AppCompatActivity {
         if (movie.getVoteAverage() != null)
             TVTotalRating.setText(getApplicationContext().getString(R.string.lblRating)+movie.getVoteAverage().toString());
         Glide.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w500"+movie.getPosterPath()).into(IVPoster);
+
+        favoriteMovie = MainActivity.getFavorite(movie.getId());
+        if (favoriteMovie)
+            IVfavorite.setImageResource(R.drawable.star_filled);
+
         IVfavorite.setClickable(true);
         IVfavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
-                mDbHelper.addFavorite(movie);
-            }
-        });
-        IV_not_favorite.setClickable(true);
-        IV_not_favorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
-                mDbHelper.removeFavorite(movie.getId());
+                if (favoriteMovie){
+                    mDbHelper.removeFavorite(movie.getId());
+                    IVfavorite.setImageResource(R.drawable.star);
+                    favoriteMovie = false;
+                }
+                else
+                {
+                    mDbHelper.addFavorite(movie);
+                    IVfavorite.setImageResource(R.drawable.star_filled);
+                    favoriteMovie = true;
+                }
             }
         });
         AsyncTask<String, Void, String> task =  new DetailActivity.getMovieDetail();
