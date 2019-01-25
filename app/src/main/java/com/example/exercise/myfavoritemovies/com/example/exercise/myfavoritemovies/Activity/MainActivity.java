@@ -1,5 +1,6 @@
 package com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,22 +26,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private ProgressBar mLoadingIndicator;
+    static  private ProgressBar mLoadingIndicator;
     private static GridView gridView;
     private static List<Movie> movies;
-    private static List<Movie> moviesFiltered;
-    private static boolean filtered = false;
-    private boolean viewTopRated = false;
+    private static Context context;
+
+    public static String getCurrentView() {
+        return currentView;
+    }
+
     private static String currentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this.getApplicationContext();
         setContentView(R.layout.activity_main);
         gridView = findViewById(R.id.gridView1);
         mLoadingIndicator = findViewById(R.id.loadingIndicator);
@@ -48,28 +51,28 @@ public class MainActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                intent.putExtra("movieObject", movies.get(position));
-                startActivity(intent);
+                if (movies != null) {
+                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                    intent.putExtra("movieObject", movies.get(position));
+                    startActivity(intent);
+                }
             }
         });
-    }
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-        movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
-        mDbHelper.getFavorites();
     }
 
     private void onUpdate() {
         if (currentView == null) {
             currentView = "popular";
         }
-        final AsyncTask<String, Void, String> task =  new getMoviesList();
-        task.execute(currentView);
+        if (currentView == "favorites")
+            updateView();
+        else
+        {
+            final AsyncTask<String, Void, String> task = new getMoviesList();
+            task.execute(currentView);
+        }
     }
+
     private void switchView(){
         if (currentView != null && currentView.equals("top_rated")){
             currentView = "popular";
@@ -84,24 +87,30 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.mainmenu, menu);
         return true;
     }
-    public static void updateFavoriteList(List<Movie> favoriteList) {
-        moviesFiltered = favoriteList;
+    public static void updateMoviesList(List<Movie> List) {
+        movies = List;
+    }
+    static public void updateView()
+    {
+        if (movies != null && movies.size() > 0) {
+            MoviesAdapter moviesAdapter = new MoviesAdapter(context, movies);
+            gridView.setAdapter(moviesAdapter);
+        }
+        // When we finish loading, we want to hide the loading indicator from the user.
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_favorites:
-                if (!filtered) {
-                    if (moviesFiltered != null && moviesFiltered.size() > 0) {
-                        MoviesAdapter moviesAdapter = new MoviesAdapter(this.getApplicationContext(), moviesFiltered);
-                        gridView.setAdapter(moviesAdapter);
-                        filtered = true;
-                    }
+                if (!currentView.equals("favorites")) {
+                    movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
+                    mDbHelper.getFavorites();
+                    currentView = "favorites";
                 } else {
-                    MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), movies);
-                    gridView.setAdapter(moviesAdapter);
-                    filtered = false;
+                    switchView();
+                    onUpdate();
                 }
                 return true;
             case R.id.action_filter:
@@ -113,9 +122,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static boolean getFavorite(Integer id) {
-        int size = moviesFiltered.size();
+        int size = movies.size();
         for (int i = 0; i < size; i++) {
-            if (moviesFiltered.get(i).getId().intValue() == id.intValue())
+            if (movies.get(i).getId().intValue() == id.intValue())
                 return true;
         }
         return false;
@@ -128,8 +137,6 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(String data) {
-            // When we finish loading, we want to hide the loading indicator from the user.
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (data == null) {
                 NetworkUtils.defaultError(getApplicationContext());
             } else {
@@ -138,9 +145,8 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject main = new JSONObject(data);
                     JSONArray arr = main.getJSONArray("results");
                     MovieList response = new Gson().fromJson(data, MovieList.class);
-                    movies = response.getResults();
-                    MoviesAdapter moviesAdapter = new MoviesAdapter(getBaseContext(), movies);
-                    gridView.setAdapter(moviesAdapter);
+                    updateMoviesList(response.getResults());
+                    updateView();
                 }
                 catch(JSONException e){
                     e.printStackTrace();

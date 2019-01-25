@@ -25,7 +25,9 @@ public class MoviesAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return movies.size();
+        if (movies != null)
+            return movies.size();
+        return 0;
     }
 
     @Override

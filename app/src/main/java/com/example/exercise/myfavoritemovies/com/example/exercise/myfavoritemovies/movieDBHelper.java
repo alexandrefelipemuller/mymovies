@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.example.exercise.myfavoritemovies.MovieDatabase;
@@ -67,8 +68,7 @@ public class movieDBHelper extends SQLiteOpenHelper {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Movie> favMovies = movieDatabase.daoAccess().fetchAllMovies();
-                MainActivity.updateFavoriteList(favMovies);
+                new getFavoriteView().execute(null, null, null);
             }
         }) .start();
     }
@@ -84,5 +84,18 @@ public class movieDBHelper extends SQLiteOpenHelper {
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    private class getFavoriteView extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPostExecute(Void result) {
+            MainActivity.updateView();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            List<Movie> favMovies = movieDatabase.daoAccess().fetchAllMovies();
+            MainActivity.updateMoviesList(favMovies);
+            return null;
+        }
     }
 }
