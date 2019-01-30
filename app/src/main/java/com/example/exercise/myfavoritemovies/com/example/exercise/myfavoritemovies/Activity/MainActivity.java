@@ -32,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
     static  private ProgressBar mLoadingIndicator;
     private static GridView gridView;
     private static List<Movie> movies;
+    private static List<Movie> favMovies;
     private static Context context;
+    private movieDBHelper mDbHelper;
 
     public static String getCurrentView() {
         return currentView;
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         gridView = findViewById(R.id.gridView1);
         mLoadingIndicator = findViewById(R.id.loadingIndicator);
         onUpdate();
+        mDbHelper = new movieDBHelper(getApplicationContext());
+        mDbHelper.getFavorites(false);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -90,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
     public static void updateMoviesList(List<Movie> List) {
         movies = List;
     }
+    public static void updateFavMoviesList() {
+        favMovies = movies;
+    }
+
     static public void updateView()
     {
         if (movies != null && movies.size() > 0) {
@@ -105,8 +113,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_favorites:
                 if (!currentView.equals("favorites")) {
-                    movieDBHelper mDbHelper = new movieDBHelper(getApplicationContext());
-                    mDbHelper.getFavorites();
+                    mDbHelper.getFavorites(true);
                     currentView = "favorites";
                 } else {
                     switchView();
@@ -122,9 +129,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static boolean getFavorite(Integer id) {
-        int size = movies.size();
+        int size = favMovies.size();
         for (int i = 0; i < size; i++) {
-            if (movies.get(i).getId().intValue() == id.intValue())
+            if (favMovies.get(i).getId().intValue() == id.intValue())
                 return true;
         }
         return false;

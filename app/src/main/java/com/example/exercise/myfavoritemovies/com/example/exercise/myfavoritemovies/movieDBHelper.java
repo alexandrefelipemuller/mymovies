@@ -64,11 +64,11 @@ public class movieDBHelper extends SQLiteOpenHelper {
         Toast.makeText(context, "Movie removed from favorites", Toast.LENGTH_SHORT).show();
     }
 
-    public void getFavorites() {
+    public void getFavorites(final Boolean refreshScreen) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                new getFavoriteView().execute(null, null, null);
+                new getFavoriteView().execute(refreshScreen);
             }
         }) .start();
     }
@@ -86,15 +86,16 @@ public class movieDBHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    private class getFavoriteView extends AsyncTask<Void, Void, Void> {
+    private class getFavoriteView extends AsyncTask<Boolean, Void, Void> {
         @Override
         protected void onPostExecute(Void result) {
             MainActivity.updateView();
         }
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Void doInBackground(Boolean... params) {
             List<Movie> favMovies = movieDatabase.daoAccess().fetchAllMovies();
             MainActivity.updateMoviesList(favMovies);
+            MainActivity.updateFavMoviesList();
             return null;
         }
     }

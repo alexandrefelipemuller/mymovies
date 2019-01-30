@@ -64,7 +64,7 @@ public class DetailActivity extends AppCompatActivity {
             TVTotalRating.setText(getApplicationContext().getString(R.string.lblRating)+movie.getVoteAverage().toString());
         Glide.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w500"+movie.getPosterPath()).into(IVPoster);
 
-        favoriteMovie = MainActivity.getCurrentView() == "favorites";
+        favoriteMovie = MainActivity.getFavorite(movie.getId());
         if (favoriteMovie)
             IVfavorite.setImageResource(R.drawable.star_filled);
 
