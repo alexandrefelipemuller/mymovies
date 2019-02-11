@@ -94,8 +94,9 @@ public class movieDBHelper extends SQLiteOpenHelper {
         @Override
         protected Void doInBackground(Boolean... params) {
             List<Movie> favMovies = movieDatabase.daoAccess().fetchAllMovies();
-            MainActivity.updateMoviesList(favMovies);
-            MainActivity.updateFavMoviesList();
+            if (params[0])
+                MainActivity.updateMoviesList(favMovies);
+            MainActivity.updateFavoritesMoviesList(favMovies);
             return null;
         }
     }

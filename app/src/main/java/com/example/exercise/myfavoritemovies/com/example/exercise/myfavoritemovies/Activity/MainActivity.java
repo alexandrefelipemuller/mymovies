@@ -94,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
     public static void updateMoviesList(List<Movie> List) {
         movies = List;
     }
-    public static void updateFavMoviesList() {
-        favMovies = movies;
+    public static void updateFavoritesMoviesList(List<Movie> List) {
+        favMovies = List;
     }
 
     static public void updateView()
@@ -129,10 +129,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static boolean getFavorite(Integer id) {
-        int size = favMovies.size();
-        for (int i = 0; i < size; i++) {
-            if (favMovies.get(i).getId().intValue() == id.intValue())
-                return true;
+        if (favMovies != null) {
+            int size = favMovies.size();
+            for (int i = 0; i < size; i++) {
+                if (favMovies.get(i).getId().intValue() == id.intValue())
+                    return true;
+            }
         }
         return false;
     }

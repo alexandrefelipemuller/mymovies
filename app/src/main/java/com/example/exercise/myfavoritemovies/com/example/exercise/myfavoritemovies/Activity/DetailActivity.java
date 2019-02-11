@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +39,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView TVTotalRating;
     ImageView IVPoster;
     ImageView IVfavorite;
-    Button YTplay;
+    LinearLayout LLplay;
     ListView LVReviews;
     boolean favoriteMovie =false;
 
@@ -51,7 +54,7 @@ public class DetailActivity extends AppCompatActivity {
         TVTotalRating = findViewById(R.id.mTotalRating);
         IVPoster = findViewById(R.id.mPosterImage);
         IVfavorite = findViewById(R.id.imageview_favorite);
-        YTplay = findViewById(R.id.play_pause_button);
+        LLplay = findViewById(R.id.play_pause_button);
         LVReviews = findViewById(R.id.reviewsId);
 
         final Movie movie = (Movie) getIntent().getSerializableExtra("movieObject");
@@ -100,7 +103,7 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String data) {
 
-            YTplay.setVisibility(View.VISIBLE);
+            LLplay.setVisibility(View.VISIBLE);
             if (data == null) {
                 NetworkUtils.defaultError(getApplicationContext());
                 return;
@@ -109,20 +112,29 @@ public class DetailActivity extends AppCompatActivity {
                 try{
                     MovieVideoDetail response = new Gson().fromJson(data, MovieVideoDetail.class);
                     final VideoDetail[] list = response.getVideoDetails();
-                    YTplay.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (list != null && list.length > 1){
-                                String url = "http://www.youtube.com/watch?v="+list[0].getKey();
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse(url));
-                                startActivity(i);
-                            }
-                            else
-                                Toast.makeText(getApplicationContext(), "Sorry, no trailler available", Toast.LENGTH_SHORT).show();
+                    if (list != null && list.length > 1) {
+                        for (int i = 0; i < list.length; i++) {
+                            Button btnAddARoom = new Button(getApplicationContext());
+                            btnAddARoom.setText("WATCH TRAILLER #"+i);
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                            btnAddARoom.setLayoutParams(params);
+                            final int finalI = i;
+                            btnAddARoom.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    String url = "http://www.youtube.com/watch?v=" + list[finalI].getKey();
+                                    Intent inte = new Intent(Intent.ACTION_VIEW);
+                                    inte.setData(Uri.parse(url));
+                                    startActivity(inte);
 
+                                }
+                            });
+                            LLplay.addView(btnAddARoom);
                         }
-                    });
+            }
+            else
+                Toast.makeText(getApplicationContext(), "Sorry, no trailler available", Toast.LENGTH_SHORT).show();
 
                 }
                 catch(Exception e){
@@ -143,7 +155,6 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String data) {
 
-            YTplay.setVisibility(View.VISIBLE);
             if (data == null) {
                 NetworkUtils.defaultError(getApplicationContext());
                 return;
@@ -160,6 +171,10 @@ public class DetailActivity extends AppCompatActivity {
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
                             android.R.layout.simple_list_item_2, android.R.id.text1, values);
                     LVReviews.setAdapter(adapter);
+                    ViewGroup.LayoutParams params = LVReviews.getLayoutParams();
+
+                    params.height = values.size()*1000;
+                    LVReviews.setLayoutParams(params);
                 } catch (Exception e) {
                     e.printStackTrace();
                     NetworkUtils.defaultError(getApplicationContext());
