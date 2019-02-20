@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static List<Movie> favMovies;
     private static Context context;
     private movieDBHelper mDbHelper;
+    private static int position;
 
     public static String getCurrentView() {
         return currentView;
@@ -84,6 +85,29 @@ public class MainActivity extends AppCompatActivity {
             currentView = "top_rated";
         }
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.position = gridView.getFirstVisiblePosition();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt("position", this.position);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.position = savedInstanceState.getInt("position");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         if (movies != null && movies.size() > 0) {
             MoviesAdapter moviesAdapter = new MoviesAdapter(context, movies);
             gridView.setAdapter(moviesAdapter);
+            gridView.setSelection(position);
         }
         // When we finish loading, we want to hide the loading indicator from the user.
         mLoadingIndicator.setVisibility(View.INVISIBLE);
