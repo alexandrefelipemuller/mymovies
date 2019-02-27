@@ -67,10 +67,6 @@ public class DetailActivity extends AppCompatActivity {
             TVTotalRating.setText(getApplicationContext().getString(R.string.lblRating)+movie.getVoteAverage().toString());
         Glide.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w500"+movie.getPosterPath()).into(IVPoster);
 
-        favoriteMovie = MainActivity.getFavorite(movie.getId());
-        if (favoriteMovie)
-            IVfavorite.setImageResource(R.drawable.star_filled);
-
         IVfavorite.setClickable(true);
         IVfavorite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +90,11 @@ public class DetailActivity extends AppCompatActivity {
 
         AsyncTask<String, Void, String> task2 = new DetailActivity.getMovieReviews();
         task2.execute(movie.getId().toString());
+        favoriteMovie = MainActivity.getFavorite(movie.getId());
+        if (favoriteMovie)
+            IVfavorite.setImageResource(R.drawable.star_filled);
+        else
+            IVfavorite.setImageResource(R.drawable.star);
     }
     private class getMovieDetail extends AsyncTask<String, Void, String> {
         @Override

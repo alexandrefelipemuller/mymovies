@@ -14,13 +14,7 @@ import com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovi
 import java.util.List;
 
 public class movieDBHelper {
-    // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Movies.db";
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE favMovies (ID INTEGER PRIMARY KEY )";
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS favMovies";
     private MovieDatabase movieDatabase;
     private Context context;
 
@@ -58,7 +52,6 @@ public class movieDBHelper {
                 movieDatabase.daoAccess().deleteMovie(movie);
             }
         }) .start();
-        Toast.makeText(context, "Movie removed from favorites", Toast.LENGTH_SHORT).show();
     }
 
     public void getFavorites(final Boolean refreshScreen) {
