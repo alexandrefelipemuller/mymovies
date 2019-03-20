@@ -1,5 +1,6 @@
 package com.example.exercise.myfavoritemovies;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -14,12 +15,16 @@ import java.util.List;
 public interface DaoAccess {
     @Insert
     void insertOnlySingleMovie (Movie movie);
+
     @Query("SELECT * FROM Movie WHERE ID = :movieId")
-    Movie fetchOneMoviesbyMovieId(int movieId);
+    LiveData<Movie> fetchOneMoviesbyMovieId(int movieId);
+
     @Query("SELECT * FROM Movie")
-    List<Movie> fetchAllMovies();
+    LiveData<List<Movie>> fetchAllMovies();
+
     @Update
     void updateMovie (Movie movie);
+
     @Delete
     void deleteMovie (Movie movie);
 }

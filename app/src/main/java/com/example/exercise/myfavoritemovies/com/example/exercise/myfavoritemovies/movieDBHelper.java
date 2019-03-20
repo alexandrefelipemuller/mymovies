@@ -1,5 +1,7 @@
 package com.example.exercise.myfavoritemovies.com.example.exercise.myfavoritemovies;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
@@ -70,10 +72,10 @@ public class movieDBHelper {
         }
         @Override
         protected Void doInBackground(Boolean... params) {
-            List<Movie> favMovies = movieDatabase.daoAccess().fetchAllMovies();
+            LiveData<List<Movie>> favMovies = movieDatabase.daoAccess().fetchAllMovies();
             if (params[0])
-                MainActivity.updateMoviesList(favMovies);
-            MainActivity.updateFavoritesMoviesList(favMovies);
+                MainActivity.updateMoviesList(favMovies.getValue());
+            MainActivity.updateFavoritesMoviesList(favMovies.getValue());
             return null;
         }
     }
